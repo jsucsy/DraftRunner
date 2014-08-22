@@ -14,12 +14,15 @@ te = []
 ki = []
 ds = []
 
-qb_headers = []
-rb_headers = []
-wr_headers = []
-te_headers = []
-ki_headers = []
-ds_headers = []
+qbrp = 0.0
+rbrp = 0.0
+wrrp= 0.0
+terp = 0.0
+kirp = 0.0
+dsrp = 0.0
+
+
+points = ''
 
 drafted = []
 
