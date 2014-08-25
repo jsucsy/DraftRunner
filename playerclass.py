@@ -63,6 +63,17 @@ class Player:
         self.y_ptsallow_27 = 0
         self.y_ptsallow_34 = 0
         self.y_ptsallow_35 = 0
+        
+        #individual defensive player
+        self.y_idp_tack_solo = 0
+        self.y_idp_tack_assist = 0
+        self.y_idp_sack= 0
+        self.y_idp_int= 0
+        self.y_idp_fumble_force = 0
+        self.y_idp_fumble_recv = 0
+        self.y_idp_td = 0
+        self.y_idp_safety = 0
+        self.y_idp_block_kick = 0
 
     def set_yahoo_qb(self, pctown = 0, games = 0, passatt = 0, passcomp = 0, passyds = 0,
                   passtd = 0, intthrown = 0, passyds_300 = 0, rushatt = 0, rushyds = 0, rushtd = 0):
@@ -122,6 +133,17 @@ class Player:
         self.y_fg_19 = float(fg_made) - self.y_fg_29 - self.y_fg_39 - self.y_fg_49 - self.y_fg_50
         self.y_fgmiss_19 = (float(fg_att) - float(fg_made)) - self.y_fgmiss_29 - self.y_fgmiss_39 - self.y_fgmiss_49 - self.y_fgmiss_50
         
+    def set_yahoo_id(self, pctown = 0, tack_solo = 0, tack_assist = 0, sack = 0, 
+                     idp_int = 0, fumble_force = 0, pass_def = 0):
+        
+        self.y_pctown = float(pctown)
+        self.y_idp_tack_solo = float(tack_solo)
+        self.y_idp_tack_assist = float(tack_assist)
+        self.y_idp_sack= float(sack)
+        self.y_idp_int= float(idp_int)
+        self.y_idp_fumble_force = float(fumble_force)
+        
+        
     def show(self):
         return 'Name:       %s\r\nYahoo Proj: %s\r\nESPN Proj:  %s\r\nFFT Proj:   %s\r\n' %(self.y_proj, self.e_proj, self.f_proj)
                   
@@ -175,3 +197,14 @@ class Player:
         self.y_proj += self.y_ptsallow_27 * scoring.ptsallow_27
         self.y_proj += self.y_ptsallow_34 * scoring.ptsallow_34
         self.y_proj += self.y_ptsallow_35 * scoring.ptsallow_35
+        
+        self.y_proj += self.y_idp_tack_solo * scoring.idp_tack_solo
+        self.y_proj += self.y_idp_tack_assist * scoring.idp_tack_assist
+        self.y_proj += self.y_idp_sack * scoring.idp_sack
+        self.y_proj += self.y_idp_int * scoring.idp_int
+        self.y_proj += self.y_idp_fumble_force * scoring.idp_fumble_force
+        self.y_proj += self.y_idp_fumble_recv * scoring.idp_fumble_recv
+        self.y_proj += self.y_idp_td * scoring.idp_td 
+        self.y_proj += self.y_idp_safety * scoring.idp_safety
+        self.y_proj += self.y_idp_block_kick * scoring.idp_block_kick
+        

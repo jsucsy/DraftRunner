@@ -50,6 +50,16 @@ class Points():
         self.ptsallow_34 = 0
         self.ptsallow_35 = 0
         
+        self.idp_tack_solo = 0
+        self.idp_tack_assist = 0
+        self.idp_sack= 0
+        self.idp_int= 0
+        self.idp_fumble_force = 0
+        self.idp_fumble_recv = 0
+        self.idp_td = 0
+        self.idp_safety = 0
+        self.idp_block_kick = 0
+        
         self.rostered_qb = 0
         self.rostered_rb = 0
         self.rostered_wr = 0
@@ -163,6 +173,16 @@ def score_liz():
     points.ptsallow_27 = 0
     points.ptsallow_34 = -1
     points.ptsallow_35 = -4
+    
+    points.idp_tack_solo = 1
+    points.idp_tack_assist = 0.5
+    points.idp_sack= 2
+    points.idp_int= 3
+    points.idp_fumble_force = 1
+    points.idp_fumble_recv = 1
+    points.idp_td = 6
+    points.idp_safety = 2
+    points.idp_block_kick = 1
 
     points.rostered_qb = 21
     points.rostered_rb = 47
@@ -172,11 +192,13 @@ def score_liz():
     points.rostered_df = 17
     points.rostered_id = 17
     
+    '''
     zeros = points.check_zeros()
     
     if zeros != []:
         print "Zero points assigned for: "
         for zero in zeros:
             print zero
+    '''
     
     return points

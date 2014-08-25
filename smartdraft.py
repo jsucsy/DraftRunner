@@ -37,6 +37,9 @@ def parse_player_yahoo(sourcefile, player_type):
                     player.set_yahoo_ki(fields[1], fields[2], fields[3], fields[4], 
                                         fields[5], fields[6], fields[7], fields[8], 
                                         fields[9], fields[10], fields[11], fields[12])
+                if player_type.upper() == 'ID': 
+                    player.set_yahoo_id(fields[1], fields[2], fields[3], fields[4], 
+                                        fields[5], fields[6], fields[7])                
                     
                 player.project_yahoo(c.points)                
                 players.append(player)
@@ -50,17 +53,19 @@ def parse_player_yahoo(sourcefile, player_type):
     return players
                 
 def setplayers():
-    source_yahoo_qb = c.workingdir + '20140815_yahoo_qb.csv'
-    source_yahoo_rb = c.workingdir + '20140815_yahoo_rb.csv'
-    source_yahoo_wr = c.workingdir + '20140815_yahoo_wr.csv'
-    source_yahoo_te = c.workingdir + '20140815_yahoo_te.csv'
-    source_yahoo_ki = c.workingdir + '20140815_yahoo_ki.csv'
+    source_yahoo_qb = c.workingdir + '20140825_yahoo_qb.csv'
+    source_yahoo_rb = c.workingdir + '20140825_yahoo_rb.csv'
+    source_yahoo_wr = c.workingdir + '20140825_yahoo_wr.csv'
+    source_yahoo_te = c.workingdir + '20140825_yahoo_te.csv'
+    source_yahoo_ki = c.workingdir + '20140825_yahoo_ki.csv'
+    source_yahoo_id = c.workingdir + '20140825_yahoo_id.csv'
     
     c.qb = parse_player_yahoo(source_yahoo_qb, 'QB')
     c.rb = parse_player_yahoo(source_yahoo_rb, 'RB')
     c.wr = parse_player_yahoo(source_yahoo_wr, 'WR')
     c.te = parse_player_yahoo(source_yahoo_te, 'TE')
     c.ki = parse_player_yahoo(source_yahoo_ki, 'KI')
+    c.id = parse_player_yahoo(source_yahoo_id, 'ID')
     
 def setscoring():
     print '0: BU keeper'
@@ -98,13 +103,15 @@ def setrpvals():
     c.rbrp = setrpval(c.rb, c.points.rostered_rb, 'y')
     c.wrrp = setrpval(c.wr, c.points.rostered_wr, 'y')
     c.terp = setrpval(c.te, c.points.rostered_te, 'y')
-    c.kirp = setrpval(c.ki, c.points.rostered_qb, 'y')
+    c.kirp = setrpval(c.ki, c.points.rostered_ki, 'y')
+    c.idrp = setrpval(c.id, c.points.rostered_id, 'y')
     
     print "QB replacement val: %s" % c.qbrp
     print "RB replacement val: %s" % c.rbrp
     print "WR replacement val: %s" % c.wrrp
     print "TE replacement val: %s" % c.terp
     print "KI replacement val: %s" % c.kirp
+    print "ID replacement val: %s" % c.idrp
 
 def setvorp():
     for player in c.qb:
@@ -117,6 +124,8 @@ def setvorp():
         player.y_vorp = player.y_proj - c.terp
     for player in c.ki:
         player.y_vorp = player.y_proj - c.kirp
+    for player in c.id:
+        player.y_vorp = player.y_proj - c.idrp
          
 #-----------------live draft----------------------
 def showqb(numtoshow = 5):
@@ -139,6 +148,11 @@ def showki(numtoshow = 5):
     print "Top %s KI: " % numtoshow
     for player in c.ki[0:numtoshow]:
         print player.showsmall()
+def showid(numtoshow = 5):
+    print "Top %s ID: " % numtoshow
+    for player in c.id[0:numtoshow]:
+        print player.showsmall()
+
 
 def reco(numreco=5):
     '''recommend a player to draft'''
@@ -181,7 +195,8 @@ def setall():
 
 def setnode():
     if platform.node() == 'JoshLaptop':
-        c.workingdir = 'c:\\users\\josh\\dropbox\\football\\data\\'
+        #c.workingdir = 'c:\\users\\josh\\dropbox\\football\\data\\'
+        c.workingdir = ''
         
 def exclude():
     exclude = ['Team', '__builtins__', '__doc__', '__file__', '__name__', '__package__', 'os', 'pickle', 'platform', 'playerclass']
@@ -192,7 +207,6 @@ def testall():
     test_setup()
     
 def test_setup():
-    #testcomment
     setall()
     
 
