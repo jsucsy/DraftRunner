@@ -96,6 +96,7 @@ def setrpval(player_type, numonroster, projection = 'y'):
             print "Nothing set for projection type %s" % projection
             return 0
     
+    #testcomment
     return rpsum / 5    
     
 def setrpvals():
