@@ -8,6 +8,9 @@ class Player:
     '''field names starting with y = yahoo, e = espn, f = fftoday'''
     def __init__(self, name=''):
         self.name = name
+        self.y_adp = 0
+        self.y_rank = 0
+        self.y_aucval = 0
         self.y_proj = 0
         self.e_proj = 0
         self.f_proj = 0
@@ -76,7 +79,7 @@ class Player:
         self.y_idp_block_kick = 0
 
     def set_yahoo_qb(self, pctown = 0, games = 0, passatt = 0, passcomp = 0, passyds = 0,
-                  passtd = 0, intthrown = 0, passyds_300 = 0, rushatt = 0, rushyds = 0, rushtd = 0):
+                  passtd = 0, intthrown = 0, passyds_300 = 0, rushatt = 0, rushyds = 0, rushtd = 0, yrank = 0):
         self.y_pctown = float(pctown)
         self.y_games = float(games)
         self.y_pass_att = float(passatt)
@@ -88,9 +91,10 @@ class Player:
         self.y_rush_att = float(rushatt)
         self.y_rush_yds = float(rushyds)
         self.y_rush_td = float(rushtd)
+        self.y_rank = int(yrank)
     
     def set_yahoo_rb(self, pctown = 0, games = 0, rush_att = 0, rush_yds = 0, rush_td = 0, 
-                     rush_yds_100 = 0, reception = 0, recep_yds = 0, recep_td = 0):
+                     rush_yds_100 = 0, reception = 0, recep_yds = 0, recep_td = 0, yrank = 0):
         self.y_pctown = float(pctown)
         self.y_games = float(games)
         self.y_rush_att = float(rush_att)
@@ -100,26 +104,29 @@ class Player:
         self.y_reception = float(reception)
         self.y_recep_yds = float(recep_yds)
         self.y_recep_td = float(recep_td)
+        self.y_rank = int(yrank)
     
-    def set_yahoo_wr(self, pctown = 0, games = 0, reception = 0, recep_yds = 0, recep_td = 0, recep_yds_100 = 0):
+    def set_yahoo_wr(self, pctown = 0, games = 0, reception = 0, recep_yds = 0, recep_td = 0, recep_yds_100 = 0, yrank = 0):
         self.y_pctown = float(pctown)
         self.y_games = float(games)
         self.y_reception = float(reception)
         self.y_recep_yds = float(recep_yds)
         self.y_recep_td = float(recep_td)
         self.y_recep_yds_100 = float(recep_yds_100)
+        self.y_rank = int(yrank)
     
-    def set_yahoo_te(self, pctown = 0, games = 0, reception = 0, recep_yds = 0, recep_td = 0, recep_yds_100 = 0):
+    def set_yahoo_te(self, pctown = 0, games = 0, reception = 0, recep_yds = 0, recep_td = 0, recep_yds_100 = 0, yrank = 0):
         self.y_pctown = float(pctown)
         self.y_games = float(games)
         self.y_reception = float(reception)
         self.y_recep_yds = float(recep_yds)
         self.y_recep_td = float(recep_td)
         self.y_recep_yds_100 = float(recep_yds_100)
+        self.y_rank = int(yrank)
         
     def set_yahoo_ki(self, pctown = 0, fg_att = 0, fg_made = 0, fg_att_29 = 0, fg_made_29 = 0,
                      fg_att_39 = 0, fg_made_39 = 0, fg_att_49 = 0, fg_made_49 = 0,
-                     fg_att_50 = 0, fg_made_50 = 0, pat_made = 0):
+                     fg_att_50 = 0, fg_made_50 = 0, pat_made = 0, yrank = 0):
         self.y_pctown = float(pctown)
         self.y_fg_29 = float(fg_made_29)
         self.y_fg_39 = float(fg_made_39)
@@ -132,9 +139,10 @@ class Player:
         self.y_fgmiss_50 = float(fg_att_50) - float(fg_made_50)
         self.y_fg_19 = float(fg_made) - self.y_fg_29 - self.y_fg_39 - self.y_fg_49 - self.y_fg_50
         self.y_fgmiss_19 = (float(fg_att) - float(fg_made)) - self.y_fgmiss_29 - self.y_fgmiss_39 - self.y_fgmiss_49 - self.y_fgmiss_50
+        self.y_rank = int(yrank)
         
     def set_yahoo_id(self, pctown = 0, tack_solo = 0, tack_assist = 0, sack = 0, 
-                     idp_int = 0, fumble_force = 0, pass_def = 0):
+                     idp_int = 0, fumble_force = 0, pass_def = 0, yrank = 0):
         
         self.y_pctown = float(pctown)
         self.y_idp_tack_solo = float(tack_solo)
@@ -142,14 +150,13 @@ class Player:
         self.y_idp_sack= float(sack)
         self.y_idp_int= float(idp_int)
         self.y_idp_fumble_force = float(fumble_force)
-        
+        self.y_rank = int(yrank)
         
     def show(self):
         return 'Name:       %s\r\nYahoo Proj: %s\r\nESPN Proj:  %s\r\nFFT Proj:   %s\r\n' %(self.y_proj, self.e_proj, self.f_proj)
                   
     def showsmall(self):
-        return '%s|%s|%s|%s|%s|%s|%s|%s|' % (self.name, self.y_pctown, self.y_proj, self.e_proj, self.f_proj,
-                                             self.y_vorp, self.e_vorp, self.f_vorp)            
+        return '%s|%s|%s|%s|%s|' % (self.name, self.y_rank, self.y_pctown, self.y_proj, self.y_vorp)            
                   
     def project_yahoo(self, scoring):
         self.y_proj = 0.0

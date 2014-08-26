@@ -4,8 +4,8 @@ Created on Aug 15, 2014
 @author: jsu
 '''
 
-workingdir = 'c:\\dropbox\\football\\data\\'
-workingdir = ''
+#workingdir = 'c:\\dropbox\\football\\data\\'
+workingdir = 'data\\'
 backup = 'backup\\'
 
 qb = []
@@ -31,3 +31,6 @@ drafted = []
 nom = []
 
 teams = []
+
+auction = False
+draftorder = []

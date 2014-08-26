@@ -22,24 +22,24 @@ def parse_player_yahoo(sourcefile, player_type):
                 if player_type.upper() == 'QB': 
                     player.set_yahoo_qb(fields[1], fields[2], fields[3], fields[4], 
                                         fields[5], fields[6], fields[7], fields[8], 
-                                        fields[9], fields[10], fields[11])
+                                        fields[9], fields[10], fields[11], linenum)
                 if player_type.upper() == 'RB': 
                     player.set_yahoo_rb(fields[1], fields[2], fields[3], fields[4], 
                                         fields[5], fields[6], fields[7], fields[8], 
-                                        fields[9])
+                                        fields[9], linenum)
                 if player_type.upper() == 'WR': 
                     player.set_yahoo_wr(fields[1], fields[2], fields[3], fields[4], 
-                                        fields[5], fields[6])
+                                        fields[5], fields[6], linenum)
                 if player_type.upper() == 'TE': 
                     player.set_yahoo_te(fields[1], fields[2], fields[3], fields[4], 
-                                        fields[5], fields[6])
+                                        fields[5], fields[6], linenum)
                 if player_type.upper() == 'KI': 
                     player.set_yahoo_ki(fields[1], fields[2], fields[3], fields[4], 
                                         fields[5], fields[6], fields[7], fields[8], 
-                                        fields[9], fields[10], fields[11], fields[12])
+                                        fields[9], fields[10], fields[11], fields[12], linenum)
                 if player_type.upper() == 'ID': 
                     player.set_yahoo_id(fields[1], fields[2], fields[3], fields[4], 
-                                        fields[5], fields[6], fields[7])                
+                                        fields[5], fields[6], fields[7], linenum)
                     
                 player.project_yahoo(c.points)                
                 players.append(player)
@@ -84,7 +84,7 @@ def setscoring():
 
 def setteams():
     leagues = []
-    for filename in os.listdir(c.workingdir):
+    for filename in os.listdir(c.workingdir + 'setup\\'):
         if 'teams' in filename:
             leagues.append(filename)
     
@@ -96,7 +96,7 @@ def setteams():
         counter = 0
         for line in source:
             fields = line.split('|')
-            teamtemp = Team(fields[0], fields[1], counter)
+            teamtemp = Team(fields[0], fields[1], counter, c.points.rostersize)
             c.teams.append(teamtemp)
 
 def setrpval(player_type, numonroster, projection = 'y'):
@@ -143,7 +143,27 @@ def setvorp():
         player.y_vorp = player.y_proj - c.kirp
     for player in c.id:
         player.y_vorp = player.y_proj - c.idrp
-         
+
+def setdrafttype():
+    isauction = raw_input('Is draft an auction? y/n: ')
+    if isauction.upper() == 'Y':
+        c.auction = True
+    elif isauction.upper() == 'N':
+        c.auction = False
+        rounds = c.points.rostersize
+        teamcount = len(c.teams)
+        for round in range(rounds):
+            if round % 2 == 0:
+                order = range(teamcount)                
+            else:
+                order = range(teamcount)
+                order.reverse()
+            for spot in order:
+                c.draftorder.append(spot)
+    else:
+        print 'Please try again'
+        setdrafttype()
+    
 #-----------------live draft----------------------
 def showqb(numtoshow = 5):
     print "Top %s QB: " % numtoshow
@@ -169,6 +189,131 @@ def showid(numtoshow = 5):
     print "Top %s ID: " % numtoshow
     for player in c.id[0:numtoshow]:
         print player.showsmall()
+def nomq(name=''):
+    nomtemp=[]
+    nomtemp.append('qb')
+    for player in c.qb:
+        if name.upper() in player[0]:
+            nomtemp.append(player)
+    
+    if len(nomtemp) == 0:
+        print "No player found, try again"
+    if len(nomtemp) == 1:
+        c.nom = nomtemp     
+    if len(nomtemp) > 1:
+        print "More than one found, choose a number: "
+        for player in nomtemp:
+            print "%s: %s" % (nomtemp.index(player), player)
+        playernum = int(raw_input('Player number: '))
+        c.nom = nomtemp[playernum]
+            
+    print c.nom   
+    return
+
+def nomr(name=''):
+    nomtemp=[]
+    nomtemp.append('rb')
+    for player in c.rb:
+        if name.upper() in player[0]:
+            nomtemp.append(player)
+    
+    if len(nomtemp) == 0:
+        print "No player found, try again"
+    if len(nomtemp) == 1:
+        c.nom = nomtemp     
+    if len(nomtemp) > 1:
+        print "More than one found, choose a number: "
+        for player in nomtemp:
+            print "%s: %s" % (nomtemp.index(player), player)
+        playernum = int(raw_input('Player number: '))
+        c.nom = nomtemp[playernum]
+            
+    print c.nom   
+    return
+
+def nomw(name=''):
+    nomtemp=[]
+    nomtemp.append('wr')
+    for player in c.wr:
+        if name.upper() in player[0]:
+            nomtemp.append(player)
+    
+    if len(nomtemp) == 0:
+        print "No player found, try again"
+    if len(nomtemp) == 1:
+        c.nom = nomtemp     
+    if len(nomtemp) > 1:
+        print "More than one found, choose a number: "
+        for player in nomtemp:
+            print "%s: %s" % (nomtemp.index(player), player)
+        playernum = int(raw_input('Player number: '))
+        c.nom = nomtemp[playernum]
+            
+    print c.nom
+    return
+
+def nomt(name=''):
+    nomtemp=[]
+    nomtemp.append('te')
+    for player in c.te:
+        if name.upper() in player[0]:
+            nomtemp.append(player)
+    
+    if len(nomtemp) == 0:
+        print "No player found, try again"
+    if len(nomtemp) == 1:
+        c.nom = nomtemp     
+    if len(nomtemp) > 1:
+        print "More than one found, choose a number: "
+        for player in nomtemp:
+            print "%s: %s" % (nomtemp.index(player), player)
+        playernum = int(raw_input('Player number: '))
+        c.nom = nomtemp[playernum]
+            
+    print c.nom
+    return
+
+def nomk(name=''):
+    nomtemp=[]
+    nomtemp.append('ki')
+    for player in c.ki:
+        if name.upper() in player[0]:
+            nomtemp.append(player)
+    
+    if len(nomtemp) == 0:
+        print "No player found, try again"
+    if len(nomtemp) == 1:
+        c.nom = nomtemp     
+    if len(nomtemp) > 1:
+        print "More than one found, choose a number: "
+        for player in nomtemp:
+            print "%s: %s" % (nomtemp.index(player), player)
+        playernum = int(raw_input('Player number: '))
+        c.nom = nomtemp[playernum]
+            
+    print c.nom
+    return
+
+def nomd(name=''):
+    nomtemp=[]
+    nomtemp.append('ds')
+    for player in c.ds:
+        if name.upper() in player[0]:
+            nomtemp.append(player)
+    
+    if len(nomtemp) == 0:
+        print "No player found, try again"
+    if len(nomtemp) == 1:
+        c.nom = nomtemp     
+    if len(nomtemp) > 1:
+        print "More than one found, choose a number: "
+        for player in nomtemp:
+            print "%s: %s" % (nomtemp.index(player), player)
+        playernum = int(raw_input('Player number: '))
+        c.nom = nomtemp[playernum]
+            
+    print c.nom
+    return
 
 
 def reco(numreco=5):
@@ -192,10 +337,11 @@ def reco(numreco=5):
         print player.showsmall()
 
 def setall():
-    setnode()
+    #setnode()
     setscoring()
     setplayers()
     setteams()
+    setdrafttype()
     setrpvals()
     setvorp()
     

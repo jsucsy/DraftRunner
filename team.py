@@ -5,12 +5,13 @@ Created on Aug 15, 2014
 '''
 
 class Team:
-    def __init__(self, name='', owner='', id='', budget = 200):
+    def __init__(self, name='', owner='', id='', rostersize = 17, budget = 200):
         self.name = name
         self.owner = owner
         self.players = []
         self.id = id
         self.budget = budget
+        self.rostersize = rostersize
         
     def name(self, name):
         self.name = name
@@ -24,7 +25,7 @@ class Team:
         print '# Players: %s' % len(self.players)
         print 'Budget: $%s' % self.budget
         
-    def draft(self, player, cost):
+    def draft(self, player, cost=0):
         self.players.append(player)
         self.budget -= cost
         

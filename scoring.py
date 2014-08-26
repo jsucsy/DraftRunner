@@ -67,6 +67,7 @@ class Points():
         self.rostered_ki = 0
         self.rostered_df = 0
         self.rostered_id = 0
+        self.rostersize = 0
         
     def check_zeros(self):
         zeros = []
@@ -131,6 +132,7 @@ def score_bu():
     points.rostered_ki = 14
     points.rostered_df = 16
     points.rostered_id = 0
+    points.rostersize = 17
     
     zeros = points.check_zeros()
     
@@ -191,6 +193,7 @@ def score_liz():
     points.rostered_ki = 15
     points.rostered_df = 17
     points.rostered_id = 17
+    points.rostersize = 17
     
     '''
     zeros = points.check_zeros()
