@@ -84,7 +84,7 @@ def setscoring():
 
 def setteams():
     leagues = []
-    for filename in os.listdir(c.workingdir + 'setup'):
+    for filename in os.listdir(c.workingdir):
         if 'teams' in filename:
             leagues.append(filename)
     
