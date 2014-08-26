@@ -82,6 +82,23 @@ def setscoring():
     else:
         print 'No scoring setup for that option'
 
+def setteams():
+    leagues = []
+    for filename in os.listdir(c.workingdir + 'setup'):
+        if 'teams' in filename:
+            leagues.append(filename)
+    
+    for league in leagues:
+        print "%s: %s" % (leagues.index(league), league)        
+    leaguenum = int(raw_input('Select league number: '))
+    
+    with open(c.workingdir + 'setup\\%s' % leagues[leaguenum], 'rb+') as source:
+        counter = 0
+        for line in source:
+            fields = line.split('|')
+            teamtemp = Team(fields[0], fields[1], counter)
+            c.teams.append(teamtemp)
+
 def setrpval(player_type, numonroster, projection = 'y'):
     rplist = player_type[numonroster:numonroster+5]
     rpsum = 0.0 
@@ -96,7 +113,6 @@ def setrpval(player_type, numonroster, projection = 'y'):
             print "Nothing set for projection type %s" % projection
             return 0
     
-    #testcomment
     return rpsum / 5    
     
 def setrpvals():
@@ -179,6 +195,7 @@ def setall():
     setnode()
     setscoring()
     setplayers()
+    setteams()
     setrpvals()
     setvorp()
     
