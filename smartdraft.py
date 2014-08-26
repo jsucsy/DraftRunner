@@ -22,7 +22,7 @@ def parse_player_yahoo(sourcefile, player_type):
                 if player_type.upper() == 'QB': 
                     player.set_yahoo_qb(fields[1], fields[2], fields[3], fields[4], 
                                         fields[5], fields[6], fields[7], fields[8], 
-                                        fields[9], fields[10], fields[11], linenum)
+                                        fields[9], fields[10], fields[11], fields[12])
                 if player_type.upper() == 'RB': 
                     player.set_yahoo_rb(fields[1], fields[2], fields[3], fields[4], 
                                         fields[5], fields[6], fields[7], fields[8], 
@@ -190,133 +190,39 @@ def showid(numtoshow = 5):
     for player in c.id[0:numtoshow]:
         print player.showsmall()
 def nomq(name=''):
-    nomtemp=[]
-    nomtemp.append('qb')
-    for player in c.qb:
-        if name.upper() in player[0]:
-            nomtemp.append(player)
-    
-    if len(nomtemp) == 0:
-        print "No player found, try again"
-    if len(nomtemp) == 1:
-        c.nom = nomtemp     
-    if len(nomtemp) > 1:
-        print "More than one found, choose a number: "
-        for player in nomtemp:
-            print "%s: %s" % (nomtemp.index(player), player)
-        playernum = int(raw_input('Player number: '))
-        c.nom = nomtemp[playernum]
-            
-    print c.nom   
-    return
-
+    nominate(name, c.qb)
 def nomr(name=''):
-    nomtemp=[]
-    nomtemp.append('rb')
-    for player in c.rb:
-        if name.upper() in player[0]:
-            nomtemp.append(player)
-    
-    if len(nomtemp) == 0:
-        print "No player found, try again"
-    if len(nomtemp) == 1:
-        c.nom = nomtemp     
-    if len(nomtemp) > 1:
-        print "More than one found, choose a number: "
-        for player in nomtemp:
-            print "%s: %s" % (nomtemp.index(player), player)
-        playernum = int(raw_input('Player number: '))
-        c.nom = nomtemp[playernum]
-            
-    print c.nom   
-    return
-
+    nominate(name, c.rb)
 def nomw(name=''):
-    nomtemp=[]
-    nomtemp.append('wr')
-    for player in c.wr:
-        if name.upper() in player[0]:
-            nomtemp.append(player)
-    
-    if len(nomtemp) == 0:
-        print "No player found, try again"
-    if len(nomtemp) == 1:
-        c.nom = nomtemp     
-    if len(nomtemp) > 1:
-        print "More than one found, choose a number: "
-        for player in nomtemp:
-            print "%s: %s" % (nomtemp.index(player), player)
-        playernum = int(raw_input('Player number: '))
-        c.nom = nomtemp[playernum]
-            
-    print c.nom
-    return
-
+    nominate(name, c.wr)
 def nomt(name=''):
-    nomtemp=[]
-    nomtemp.append('te')
-    for player in c.te:
-        if name.upper() in player[0]:
-            nomtemp.append(player)
-    
-    if len(nomtemp) == 0:
-        print "No player found, try again"
-    if len(nomtemp) == 1:
-        c.nom = nomtemp     
-    if len(nomtemp) > 1:
-        print "More than one found, choose a number: "
-        for player in nomtemp:
-            print "%s: %s" % (nomtemp.index(player), player)
-        playernum = int(raw_input('Player number: '))
-        c.nom = nomtemp[playernum]
-            
-    print c.nom
-    return
-
+    nominate(name, c.te)
 def nomk(name=''):
-    nomtemp=[]
-    nomtemp.append('ki')
-    for player in c.ki:
-        if name.upper() in player[0]:
-            nomtemp.append(player)
-    
-    if len(nomtemp) == 0:
-        print "No player found, try again"
-    if len(nomtemp) == 1:
-        c.nom = nomtemp     
-    if len(nomtemp) > 1:
-        print "More than one found, choose a number: "
-        for player in nomtemp:
-            print "%s: %s" % (nomtemp.index(player), player)
-        playernum = int(raw_input('Player number: '))
-        c.nom = nomtemp[playernum]
-            
-    print c.nom
-    return
-
+    nominate(name, c.ki)
 def nomd(name=''):
-    nomtemp=[]
-    nomtemp.append('ds')
-    for player in c.ds:
-        if name.upper() in player[0]:
+    nominate(name, c.ds)
+def nomi(name=''):
+    nominate(name, c.id) 
+def nominate(name, playerlist):
+    nomtemp = []
+    for player in playerlist:
+        if name.upper() in player.name.upper():
             nomtemp.append(player)
-    
+            
     if len(nomtemp) == 0:
         print "No player found, try again"
     if len(nomtemp) == 1:
-        c.nom = nomtemp     
+        c.nom = nomtemp[0] 
     if len(nomtemp) > 1:
         print "More than one found, choose a number: "
         for player in nomtemp:
-            print "%s: %s" % (nomtemp.index(player), player)
+            print "%s: %s" % (nomtemp.index(player), player.showsmall())
         playernum = int(raw_input('Player number: '))
         c.nom = nomtemp[playernum]
-            
-    print c.nom
+    print c.nom.showsmall()
     return
 
-
-def reco(numreco=5):
+def reco(numreco=10):
     '''recommend a player to draft'''
     topvorp = []
     for player in c.qb[0:numreco]:
@@ -334,7 +240,29 @@ def reco(numreco=5):
     topvorp.reverse()
     print "Recommended: "
     for player in topvorp[0:numreco]:
-        print player.showsmall()
+        print "%s: %s" % (topvorp.index(player), player.showsmall())
+    try:
+        playernum = int(raw_input('Nominate player, enter for none: '))
+    except ValueError:
+        playernum = ''
+    
+    if playernum == '':
+        return
+    else:
+        c.nom = topvorp[playernum]
+        print c.nom.showsmall()
+        return
+
+def snake():
+    return
+
+def draft(team='', cost=''):
+    if c.auction == True:
+        if team == '':
+            for team in c.teams:
+                print "%s: %s" % (c.teams.index(team), team.showsmall())
+            teamnum = int(raw_input('Choose team number: '))
+        
 
 def setall():
     #setnode()

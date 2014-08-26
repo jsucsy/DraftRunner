@@ -25,6 +25,9 @@ class Team:
         print '# Players: %s' % len(self.players)
         print 'Budget: $%s' % self.budget
         
+    def showsmall(self):
+        print "%s|%s|%s|%s|" % (self.name, self.owner, len(self.players), self.budget)
+        
     def draft(self, player, cost=0):
         self.players.append(player)
         self.budget -= cost
