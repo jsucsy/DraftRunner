@@ -141,7 +141,7 @@ class Player:
         self.y_fgmiss_19 = (float(fg_att) - float(fg_made)) - self.y_fgmiss_29 - self.y_fgmiss_39 - self.y_fgmiss_49 - self.y_fgmiss_50
         self.y_rank = int(yrank)
         
-    def set_yahoo_id(self, pctown = 0, tack_solo = 0, tack_assist = 0, sack = 0, 
+    def set_yahoo_dp(self, pctown = 0, tack_solo = 0, tack_assist = 0, sack = 0, 
                      idp_int = 0, fumble_force = 0, pass_def = 0, yrank = 0):
         
         self.y_pctown = float(pctown)

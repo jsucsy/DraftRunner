@@ -14,7 +14,7 @@ wr = []
 te = []
 ki = []
 ds = []
-id = []
+dp = []
 
 qbrp = 0.0
 rbrp = 0.0
@@ -28,7 +28,7 @@ points = ''
 
 drafted = []
 
-nom = []
+nom = ''
 
 teams = []
 

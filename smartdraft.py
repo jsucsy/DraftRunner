@@ -38,7 +38,7 @@ def parse_player_yahoo(sourcefile, player_type):
                                         fields[5], fields[6], fields[7], fields[8], 
                                         fields[9], fields[10], fields[11], fields[12], linenum)
                 if player_type.upper() == 'ID': 
-                    player.set_yahoo_id(fields[1], fields[2], fields[3], fields[4], 
+                    player.set_yahoo_dp(fields[1], fields[2], fields[3], fields[4], 
                                         fields[5], fields[6], fields[7], linenum)
                     
                 player.project_yahoo(c.points)                
@@ -58,14 +58,14 @@ def setplayers():
     source_yahoo_wr = c.workingdir + '20140825_yahoo_wr.csv'
     source_yahoo_te = c.workingdir + '20140825_yahoo_te.csv'
     source_yahoo_ki = c.workingdir + '20140825_yahoo_ki.csv'
-    source_yahoo_id = c.workingdir + '20140825_yahoo_id.csv'
+    source_yahoo_dp = c.workingdir + '20140825_yahoo_dp.csv'
     
     c.qb = parse_player_yahoo(source_yahoo_qb, 'QB')
     c.rb = parse_player_yahoo(source_yahoo_rb, 'RB')
     c.wr = parse_player_yahoo(source_yahoo_wr, 'WR')
     c.te = parse_player_yahoo(source_yahoo_te, 'TE')
     c.ki = parse_player_yahoo(source_yahoo_ki, 'KI')
-    c.id = parse_player_yahoo(source_yahoo_id, 'ID')
+    c.dp = parse_player_yahoo(source_yahoo_dp, 'ID')
     
 def setscoring():
     print '0: BU keeper'
@@ -121,14 +121,14 @@ def setrpvals():
     c.wrrp = setrpval(c.wr, c.points.rostered_wr, 'y')
     c.terp = setrpval(c.te, c.points.rostered_te, 'y')
     c.kirp = setrpval(c.ki, c.points.rostered_ki, 'y')
-    c.idrp = setrpval(c.id, c.points.rostered_id, 'y')
+    c.dprp = setrpval(c.dp, c.points.rostered_dp, 'y')
     
     print "QB replacement val: %s" % c.qbrp
     print "RB replacement val: %s" % c.rbrp
     print "WR replacement val: %s" % c.wrrp
     print "TE replacement val: %s" % c.terp
     print "KI replacement val: %s" % c.kirp
-    print "ID replacement val: %s" % c.idrp
+    print "ID replacement val: %s" % c.dprp
 
 def setvorp():
     for player in c.qb:
@@ -141,8 +141,8 @@ def setvorp():
         player.y_vorp = player.y_proj - c.terp
     for player in c.ki:
         player.y_vorp = player.y_proj - c.kirp
-    for player in c.id:
-        player.y_vorp = player.y_proj - c.idrp
+    for player in c.dp:
+        player.y_vorp = player.y_proj - c.dprp
 
 def setdrafttype():
     isauction = raw_input('Is draft an auction? y/n: ')
@@ -163,6 +163,26 @@ def setdrafttype():
     else:
         print 'Please try again'
         setdrafttype()
+
+def remove_drafted_player(player):
+    if c.nom in c.qb:
+        c.qb.remove(c.nom)
+    elif c.nom in c.rb:
+        c.rb.remove(c.nom)
+    elif c.nom in c.wr:
+        c.wr.remove(c.nom)
+    elif c.nom in c.te:
+        c.te.remove(c.nom)
+    elif c.nom in c.ki:
+        c.ki.remove(c.nom)
+    elif c.nom in c.ds:
+        c.ds.remove(c.nom)
+    elif c.nom in c.dp:
+        c.dp.remove(c.nom)
+    else: 
+        print "Player not found!!!!!"
+        return 
+    return
     
 #-----------------live draft----------------------
 def showqb(numtoshow = 5):
@@ -185,9 +205,9 @@ def showki(numtoshow = 5):
     print "Top %s KI: " % numtoshow
     for player in c.ki[0:numtoshow]:
         print player.showsmall()
-def showid(numtoshow = 5):
+def showdp(numtoshow = 5):
     print "Top %s ID: " % numtoshow
-    for player in c.id[0:numtoshow]:
+    for player in c.dp[0:numtoshow]:
         print player.showsmall()
 def nomq(name=''):
     nominate(name, c.qb)
@@ -201,8 +221,8 @@ def nomk(name=''):
     nominate(name, c.ki)
 def nomd(name=''):
     nominate(name, c.ds)
-def nomi(name=''):
-    nominate(name, c.id) 
+def nomp(name=''):
+    nominate(name, c.dp) 
 def nominate(name, playerlist):
     nomtemp = []
     for player in playerlist:
@@ -222,7 +242,7 @@ def nominate(name, playerlist):
     print c.nom.showsmall()
     return
 
-def reco(numreco=10):
+def reco(numreco=25):
     '''recommend a player to draft'''
     topvorp = []
     for player in c.qb[0:numreco]:
@@ -254,16 +274,57 @@ def reco(numreco=10):
         return
 
 def snake():
+    cost = 0
+    team = c.teams[c.draftorder[0]]
+    team.showsmall()
+    if c.nom == '':
+        reco(10)
+    if c.nom == '':
+        return
+    
+    team.draft(c.nom, 0)
+    c.drafted.append("%s|%s|%s|" % (team.showsmall(), cost, c.nom.showsmall()))
+    print "\r\n%s drafts %s\r\n" % (team.name, c.nom.name)
+    c.draftorder.pop(0)
+    remove_drafted_player(c.nom)
+    
+    c.nom = ''
+    
+    snake()
     return
 
+def history(numtoshow = len(c.drafted)):
+    for line in c.drafted[-numtoshow:]:
+        print line
+
+def undo():
+    lastdraft = c.drafted[-1]
+    fields = lastdraft.split('|')
+    print "Undrafting %s to %s" % (fields[6], fields[0])
+    #for team in c.teams:
+        
+
 def draft(team='', cost=''):
+    '''
     if c.auction == True:
         if team == '':
             for team in c.teams:
                 print "%s: %s" % (c.teams.index(team), team.showsmall())
             teamnum = int(raw_input('Choose team number: '))
-        
+            team = c.teams[teamnum]
+        if cost == '':
+            cost = int(raw_input('Enter bid price: '))
+    
+    for team_perm in c.teams:
+        if team_perm == team:
+            team_perm.draft(c.nom, cost)
+    
+    c.drafted.append("%s|%s|%s|" % (team.showsmall(), cost, c.nom.showsmall()))
+    
 
+    '''
+    
+    
 def setall():
     #setnode()
     setscoring()
