@@ -9,6 +9,7 @@ import os, platform
 from team import Team
 import playerclass
 import scoring as scoring
+from datetime import datetime
 
 #-------------draft setup------------------------
 def parse_player_yahoo(sourcefile, player_type):
@@ -20,38 +21,34 @@ def parse_player_yahoo(sourcefile, player_type):
                 fields = line.split('|')
                 player = playerclass.Player(fields[0])
                 if player_type.upper() == 'QB': 
-                    player.set_yahoo_qb(fields[1], fields[2], fields[3], fields[4], 
-                                        fields[5], fields[6], fields[7], fields[8], 
+                    player.set_yahoo_qb(fields[1], fields[2], fields[3], fields[4],
+                                        fields[5], fields[6], fields[7], fields[8],
                                         fields[9], fields[10], fields[11], fields[12])
                 if player_type.upper() == 'RB': 
-                    player.set_yahoo_rb(fields[1], fields[2], fields[3], fields[4], 
-                                        fields[5], fields[6], fields[7], fields[8], 
+                    player.set_yahoo_rb(fields[1], fields[2], fields[3], fields[4],
+                                        fields[5], fields[6], fields[7], fields[8],
                                         fields[9], linenum)
                 if player_type.upper() == 'WR': 
-                    player.set_yahoo_wr(fields[1], fields[2], fields[3], fields[4], 
+                    player.set_yahoo_wr(fields[1], fields[2], fields[3], fields[4],
                                         fields[5], fields[6], linenum)
                 if player_type.upper() == 'TE': 
-                    player.set_yahoo_te(fields[1], fields[2], fields[3], fields[4], 
+                    player.set_yahoo_te(fields[1], fields[2], fields[3], fields[4],
                                         fields[5], fields[6], linenum)
                 if player_type.upper() == 'KI': 
-                    player.set_yahoo_ki(fields[1], fields[2], fields[3], fields[4], 
-                                        fields[5], fields[6], fields[7], fields[8], 
+                    player.set_yahoo_ki(fields[1], fields[2], fields[3], fields[4],
+                                        fields[5], fields[6], fields[7], fields[8],
                                         fields[9], fields[10], fields[11], fields[12], linenum)
                 if player_type.upper() == 'ID': 
-                    player.set_yahoo_dp(fields[1], fields[2], fields[3], fields[4], 
+                    player.set_yahoo_dp(fields[1], fields[2], fields[3], fields[4],
                                         fields[5], fields[6], fields[7], linenum)
                     
                 player.project_yahoo(c.points)                
                 players.append(player)
             linenum += 1
             
-    #print player_type
     players.sort(key=lambda tup: tup.y_proj)
     players.reverse()
-    #for player in players[0:10]:
-    #    print player.showsmall()
     return players
-                
 def setplayers():
     source_yahoo_qb = c.workingdir + '20140825_yahoo_qb.csv'
     source_yahoo_rb = c.workingdir + '20140825_yahoo_rb.csv'
@@ -65,8 +62,7 @@ def setplayers():
     c.wr = parse_player_yahoo(source_yahoo_wr, 'WR')
     c.te = parse_player_yahoo(source_yahoo_te, 'TE')
     c.ki = parse_player_yahoo(source_yahoo_ki, 'KI')
-    c.dp = parse_player_yahoo(source_yahoo_dp, 'ID')
-    
+    c.dp = parse_player_yahoo(source_yahoo_dp, 'ID')  
 def setscoring():
     print '0: BU keeper'
     print '1: big dog expensive'
@@ -81,7 +77,6 @@ def setscoring():
         c.points = scoring.score_liz()
     else:
         print 'No scoring setup for that option'
-
 def setteams():
     leagues = []
     for filename in os.listdir(c.workingdir + 'setup\\'):
@@ -98,9 +93,8 @@ def setteams():
             fields = line.split('|')
             teamtemp = Team(fields[0], fields[1], counter, c.points.rostersize)
             c.teams.append(teamtemp)
-
-def setrpval(player_type, numonroster, projection = 'y'):
-    rplist = player_type[numonroster:numonroster+5]
+def setrpval(player_type, numonroster, projection='y'):
+    rplist = player_type[numonroster:numonroster + 5]
     rpsum = 0.0 
     for player in rplist:
         if projection.lower() == 'y':
@@ -114,7 +108,6 @@ def setrpval(player_type, numonroster, projection = 'y'):
             return 0
     
     return rpsum / 5    
-    
 def setrpvals():
     c.qbrp = setrpval(c.qb, c.points.rostered_qb, 'y')
     c.rbrp = setrpval(c.rb, c.points.rostered_rb, 'y')
@@ -129,7 +122,6 @@ def setrpvals():
     print "TE replacement val: %s" % c.terp
     print "KI replacement val: %s" % c.kirp
     print "ID replacement val: %s" % c.dprp
-
 def setvorp():
     for player in c.qb:
         player.y_vorp = player.y_proj - c.qbrp
@@ -143,7 +135,6 @@ def setvorp():
         player.y_vorp = player.y_proj - c.kirp
     for player in c.dp:
         player.y_vorp = player.y_proj - c.dprp
-
 def setdrafttype():
     isauction = raw_input('Is draft an auction? y/n: ')
     if isauction.upper() == 'Y':
@@ -163,7 +154,6 @@ def setdrafttype():
     else:
         print 'Please try again'
         setdrafttype()
-
 def remove_drafted_player(player):
     if c.nom in c.qb:
         c.qb.remove(c.nom)
@@ -183,29 +173,42 @@ def remove_drafted_player(player):
         print "Player not found!!!!!"
         return 
     return
+
+###-----------------backup and documentation--------
+def backup():
+    '''not working'''
+    filename = c.workingdir + c.backup + '%s.pkl' % datetime.strftime(datetime.now(), '%Y%M%D%h%m')
+    print 'Backup file: %s' % filename
+    pickle.dump(c, filename)
     
-#-----------------live draft----------------------
-def showqb(numtoshow = 5):
+    
+
+###-----------------live draft----------------------
+
+def showteams():
+    for team in c.teams:
+        print "%s: %s" % (c.teams.index(team), team.showsmall())
+def showqb(numtoshow=5):
     print "Top %s QB: " % numtoshow
     for player in c.qb[0:numtoshow]:
         print player.showsmall()
-def showrb(numtoshow = 5):
+def showrb(numtoshow=5):
     print "Top %s RB: " % numtoshow
     for player in c.rb[0:numtoshow]:
         print player.showsmall()        
-def showwr(numtoshow = 5):
+def showwr(numtoshow=5):
     print "Top %s WR: " % numtoshow
     for player in c.wr[0:numtoshow]:
         print player.showsmall()        
-def showte(numtoshow = 5):
+def showte(numtoshow=5):
     print "Top %s TE: " % numtoshow
     for player in c.te[0:numtoshow]:
         print player.showsmall()        
-def showki(numtoshow = 5):
+def showki(numtoshow=5):
     print "Top %s KI: " % numtoshow
     for player in c.ki[0:numtoshow]:
         print player.showsmall()
-def showdp(numtoshow = 5):
+def showdp(numtoshow=5):
     print "Top %s ID: " % numtoshow
     for player in c.dp[0:numtoshow]:
         print player.showsmall()
@@ -276,16 +279,16 @@ def reco(numreco=25):
 def snake():
     cost = 0
     team = c.teams[c.draftorder[0]]
-    team.showsmall()
+    print "\r\n Now drafting: %s" % team.showsmall()
     if c.nom == '':
-        reco(10)
+        reco(25)
     if c.nom == '':
         return
     
     team.draft(c.nom, 0)
     c.drafted.append("%s|%s|%s|" % (team.showsmall(), cost, c.nom.showsmall()))
     print "\r\n%s drafts %s\r\n" % (team.name, c.nom.name)
-    c.draftorder.pop(0)
+    c.justwent = c.draftorder.pop(0)
     remove_drafted_player(c.nom)
     
     c.nom = ''
@@ -293,17 +296,35 @@ def snake():
     snake()
     return
 
-def history(numtoshow = len(c.drafted)):
+def history(numtoshow=len(c.drafted)):
     for line in c.drafted[-numtoshow:]:
         print line
 
 def undo():
+    '''puts all players into c.qb: need to add correct sorting logic'''
     lastdraft = c.drafted[-1]
     fields = lastdraft.split('|')
-    print "Undrafting %s to %s" % (fields[6], fields[0])
-    #for team in c.teams:
-        
+    print "\r\nUndrafting %s to %s\r\n" % (fields[6], fields[0])
+    for teamtemp in c.teams:
+        if teamtemp.name == fields[0]:
+            team = teamtemp
+    for playertemp in team.players:
+        if playertemp.name == fields[6]:
+            player = playertemp
+    
+    c.qb.append(player)
+    c.qb.sort(key=lambda tup: tup.y_proj)
+    c.qb.reverse()
 
+    team.players.remove(player)
+    c.drafted.pop()
+    if c.justwent == '':
+        showteams()
+        c.justwent = int(raw_input("Select team number to draft next: "))        
+    c.draftorder.insert(0, c.justwent)
+    c.justwent = ''
+    history(5)
+       
 def draft(team='', cost=''):
     '''
     if c.auction == True:
@@ -326,7 +347,7 @@ def draft(team='', cost=''):
     
     
 def setall():
-    #setnode()
+    # setnode()
     setscoring()
     setplayers()
     setteams()
@@ -334,13 +355,13 @@ def setall():
     setrpvals()
     setvorp()
     
-    reco(10)
+    reco(25)
     
-    #showqb()
-    #showrb()
-    #showwr()
-    #showte()
-    #showki()
+    # showqb()
+    # showrb()
+    # showwr()
+    # showte()
+    # showki()
     
     
 
@@ -348,7 +369,7 @@ def setall():
 
 def setnode():
     if platform.node() == 'JoshLaptop':
-        #c.workingdir = 'c:\\users\\josh\\dropbox\\football\\data\\'
+        # c.workingdir = 'c:\\users\\josh\\dropbox\\football\\data\\'
         c.workingdir = ''
         
 def exclude():

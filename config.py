@@ -34,3 +34,4 @@ teams = []
 
 auction = False
 draftorder = []
+justwent = ''
