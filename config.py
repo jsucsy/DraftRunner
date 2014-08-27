@@ -7,6 +7,8 @@ Created on Aug 15, 2014
 #workingdir = 'c:\\dropbox\\football\\data\\'
 workingdir = 'data\\'
 backup = 'backup\\'
+backupfile = ''
+logfile = ''
 
 qb = []
 rb = []

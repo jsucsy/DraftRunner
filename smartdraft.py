@@ -173,15 +173,40 @@ def remove_drafted_player(player):
         print "Player not found!!!!!"
         return 
     return
-
-###-----------------backup and documentation--------
-def backup():
+def setbackup():
     '''not working'''
-    filename = c.workingdir + c.backup + '%s.pkl' % datetime.strftime(datetime.now(), '%Y%M%D%h%m')
-    print 'Backup file: %s' % filename
-    pickle.dump(c, filename)
+    c.backupfile = c.workingdir + c.backup + '%s.pkl' % datetime.strftime(datetime.now(), '%Y%m%d%H%M')
+    print "Backup file: %s " % c.backupfile
+    backup()
+def setlog():
+    c.logfile = c.workingdir + c.backup + '%s.log' % datetime.strftime(datetime.now(), '%Y%m%d%H%M')
     
+###-----------------backup and documentation--------
+def backup():    
+    '''not working'''
+    pickle.dump(c, open(c.backupfile, 'wb+'))
+def writelog():
+    with open(c.logfile,'w') as log:
+        log.write('\r\n'.join(c.drafted))  
+def rankings(numreco=300):
+    topvorp = []
     
+    for player in c.qb[0:numreco]:
+        topvorp.append(player)
+    for player in c.rb[0:numreco]:
+        topvorp.append(player)
+    for player in c.wr[0:numreco]:
+        topvorp.append(player)
+    for player in c.te[0:numreco]:
+        topvorp.append(player)
+    for player in c.dp[0:numreco]:
+        topvorp.append(player)
+    topvorp.sort(key=lambda tup: tup.y_vorp)
+    topvorp.reverse()
+    
+    with open(c.workingdir + c.backup + 'rankings.txt', 'w') as dest:
+        for player in topvorp[0:numreco]:
+            dest.write("%s: %s\r\n" % (topvorp.index(player), player.showsmall()))
 
 ###-----------------live draft----------------------
 
@@ -290,9 +315,10 @@ def snake():
     print "\r\n%s drafts %s\r\n" % (team.name, c.nom.name)
     c.justwent = c.draftorder.pop(0)
     remove_drafted_player(c.nom)
-    
+       
     c.nom = ''
     
+    writelog()
     snake()
     return
 
@@ -354,6 +380,8 @@ def setall():
     setdrafttype()
     setrpvals()
     setvorp()
+    #setbackup()
+    setlog()
     
     reco(25)
     
