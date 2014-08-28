@@ -2,6 +2,17 @@
 Created on Aug 19, 2014
 
 @author: jsu
+---for work draft---
+TODO: add more wr to reco - take top X from each position --- possibly resolved by adjusting num rostered
+TODO: add def to players
+TODO: nomd not working
+TODO: adjust depth for noms
+---for bu draft---
+TODO: suggest auction value
+TODO: add bu teams
+TODO: add auction draft function
+TODO: run mock auction to test function
+
 '''
 import config as c
 import cPickle as pickle
@@ -23,7 +34,7 @@ def parse_player_yahoo(sourcefile, player_type):
                 if player_type.upper() == 'QB': 
                     player.set_yahoo_qb(fields[1], fields[2], fields[3], fields[4],
                                         fields[5], fields[6], fields[7], fields[8],
-                                        fields[9], fields[10], fields[11], fields[12])
+                                        fields[9], fields[10], fields[11], linenum)
                 if player_type.upper() == 'RB': 
                     player.set_yahoo_rb(fields[1], fields[2], fields[3], fields[4],
                                         fields[5], fields[6], fields[7], fields[8],
@@ -50,11 +61,11 @@ def parse_player_yahoo(sourcefile, player_type):
     players.reverse()
     return players
 def setplayers():
-    source_yahoo_qb = c.workingdir + '20140825_yahoo_qb.csv'
-    source_yahoo_rb = c.workingdir + '20140825_yahoo_rb.csv'
-    source_yahoo_wr = c.workingdir + '20140825_yahoo_wr.csv'
-    source_yahoo_te = c.workingdir + '20140825_yahoo_te.csv'
-    source_yahoo_ki = c.workingdir + '20140825_yahoo_ki.csv'
+    source_yahoo_qb = c.workingdir + '20140827_yahoo_qb.csv'
+    source_yahoo_rb = c.workingdir + '20140827_yahoo_rb.csv'
+    source_yahoo_wr = c.workingdir + '20140827_yahoo_wr.csv'
+    source_yahoo_te = c.workingdir + '20140827_yahoo_te.csv'
+    source_yahoo_ki = c.workingdir + '20140827_yahoo_ki.csv'
     source_yahoo_dp = c.workingdir + '20140825_yahoo_dp.csv'
     
     c.qb = parse_player_yahoo(source_yahoo_qb, 'QB')
@@ -69,11 +80,13 @@ def setscoring():
     print '2: work'
     print '3: Liz'
     
-    scoring_option = raw_input('Choose Scoring Settings: ')
+    scoring_option = int(raw_input('Choose Scoring Settings: '))
     
-    if scoring_option == '0' or 0:
+    if scoring_option == 0:
         c.points = scoring.score_bu()
-    elif scoring_option == '3' or 3:
+    elif scoring_option == 2:
+        c.points = scoring.score_work()
+    elif scoring_option == 3:
         c.points = scoring.score_liz()
     else:
         print 'No scoring setup for that option'
@@ -207,6 +220,8 @@ def rankings(numreco=300):
     with open(c.workingdir + c.backup + 'rankings.txt', 'w') as dest:
         for player in topvorp[0:numreco]:
             dest.write("%s: %s\r\n" % (topvorp.index(player), player.showsmall()))
+    
+    return topvorp
 
 ###-----------------live draft----------------------
 
@@ -306,7 +321,7 @@ def snake():
     team = c.teams[c.draftorder[0]]
     print "\r\n Now drafting: %s" % team.showsmall()
     if c.nom == '':
-        reco(25)
+        reco(40)
     if c.nom == '':
         return
     
@@ -321,6 +336,23 @@ def snake():
     writelog()
     snake()
     return
+
+def aucval(player,role):
+    rpval = 0.0
+    if role.upper() == 'QB':
+        rpval = c.qbrp
+    if role.upper() == 'RB':
+        rpval = c.rbrp
+    if role.upper() == 'WR':
+        rpval = c.wrrp
+    if role.upper() == 'TE':
+        rpval = c.terp
+    if role.upper() == 'KI':
+        rpval = c.kirp
+    if role.upper() == 'DS':
+        rpval = c.dsrp
+
+
 
 def history(numtoshow=len(c.drafted)):
     for line in c.drafted[-numtoshow:]:

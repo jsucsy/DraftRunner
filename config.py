@@ -26,6 +26,13 @@ kirp = 0.0
 dsrp = 0.0
 idrp = 0.0
 
+qbtaken = 0
+rbtaken = 0
+wrtaken = 0
+tetaken = 0
+kitaken = 0
+dstaken = 0
+
 points = ''
 
 drafted = []

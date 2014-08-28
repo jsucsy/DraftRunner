@@ -125,10 +125,10 @@ def score_bu():
     points.ptsallow_34 = -1
     points.ptsallow_35 = -3
     
-    points.rostered_qb = 19
-    points.rostered_rb = 50
-    points.rostered_wr = 50
-    points.rostered_te = 21
+    points.rostered_qb = 14
+    points.rostered_rb = 45
+    points.rostered_wr = 67
+    points.rostered_te = 14
     points.rostered_ki = 14
     points.rostered_df = 16
     points.rostered_dp = 0
@@ -194,6 +194,59 @@ def score_liz():
     points.rostered_df = 17
     points.rostered_dp = 17
     points.rostersize = 17
+    
+    '''
+    zeros = points.check_zeros()
+    
+    if zeros != []:
+        print "Zero points assigned for: "
+        for zero in zeros:
+            print zero
+    '''
+    
+    return points
+
+def score_work():
+    points = Points()
+    points.pass_yds = 0.04
+    points.pass_td = 4
+    points.int_thrown = -1
+    points.rush_yds = 0.1
+    points.rush_td = 6
+    points.recep_yds = 0.1
+    points.recep_td = 6
+    points.twopt_conv = 2
+    points.fumble_lost = -2
+    points.off_fumble_ret_td = 6
+    points.fg_19 = 3
+    points.fg_29 = 3
+    points.fg_39 = 3
+    points.fg_49 = 4
+    points.fg_50 = 5
+    points.pat_made = 1
+    points.sack = 1
+    points.int_recv = 2
+    points.fumble_recv = 2
+    points.def_td = 6
+    points.def_safety = 2
+    points.block_kick = 2
+    points.spec_td = 6
+    points.ptsallow_0 = 10
+    points.ptsallow_6 = 7
+    points.ptsallow_13 = 4
+    points.ptsallow_20 = 1
+    points.ptsallow_27 = 0
+    points.ptsallow_34 = -1
+    points.ptsallow_35 = -4
+    
+    points.rostered_qb = 17
+    points.rostered_rb = 56
+    points.rostered_wr = 78
+    points.rostered_te = 17
+    points.rostered_ki = 12
+    points.rostered_df = 12
+    points.rostered_dp = 0
+    points.rostersize = 16
     
     '''
     zeros = points.check_zeros()
