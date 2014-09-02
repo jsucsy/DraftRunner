@@ -151,6 +151,12 @@ class Player:
         self.y_idp_int= float(idp_int)
         self.y_idp_fumble_force = float(fumble_force)
         self.y_rank = int(yrank)
+    
+    def set_yahoo_ds(self, yrank = 0, yproj = 0):
+        
+        self.y_rank = int(yrank)
+        self.y_proj = float(yproj)
+
         
     def show(self):
         return 'Name:       %s\r\nYahoo Proj: %s\r\nESPN Proj:  %s\r\nFFT Proj:   %s\r\n' %(self.y_proj, self.e_proj, self.f_proj)

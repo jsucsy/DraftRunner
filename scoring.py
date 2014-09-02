@@ -160,7 +160,12 @@ def score_liz():
     points.fg_39 = 3
     points.fg_49 = 4
     points.fg_50 = 5
+    points.fgmiss_19 = -4
+    points.fgmiss_29 = -3
+    points.fgmiss_39 = -2
+    points.fgmiss_49 = -1
     points.pat_made = 1
+    points.pat_miss = -5
     points.sack = 1
     points.int_recv = 2
     points.fumble_recv = 2
@@ -209,10 +214,11 @@ def score_liz():
 def score_work():
     points = Points()
     points.pass_yds = 0.04
-    points.pass_td = 4
-    points.int_thrown = -1
+    points.pass_td = 6
+    points.int_thrown = -2
     points.rush_yds = 0.1
     points.rush_td = 6
+    points.reception = 0.5
     points.recep_yds = 0.1
     points.recep_td = 6
     points.twopt_conv = 2

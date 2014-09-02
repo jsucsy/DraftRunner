@@ -52,8 +52,11 @@ def parse_player_yahoo(sourcefile, player_type):
                 if player_type.upper() == 'ID': 
                     player.set_yahoo_dp(fields[1], fields[2], fields[3], fields[4],
                                         fields[5], fields[6], fields[7], linenum)
+                if player_type.upper() == 'DS': 
+                    player.set_yahoo_ds(fields[1], fields[11])
                     
-                player.project_yahoo(c.points)                
+                if player_type.upper() != 'DS':
+                    player.project_yahoo(c.points)                
                 players.append(player)
             linenum += 1
             
@@ -66,14 +69,14 @@ def setplayers():
     source_yahoo_wr = c.workingdir + '20140827_yahoo_wr.csv'
     source_yahoo_te = c.workingdir + '20140827_yahoo_te.csv'
     source_yahoo_ki = c.workingdir + '20140827_yahoo_ki.csv'
-    source_yahoo_dp = c.workingdir + '20140825_yahoo_dp.csv'
+    source_yahoo_ds = c.workingdir + '20140828_fft_ds.csv'
     
     c.qb = parse_player_yahoo(source_yahoo_qb, 'QB')
     c.rb = parse_player_yahoo(source_yahoo_rb, 'RB')
     c.wr = parse_player_yahoo(source_yahoo_wr, 'WR')
     c.te = parse_player_yahoo(source_yahoo_te, 'TE')
     c.ki = parse_player_yahoo(source_yahoo_ki, 'KI')
-    c.dp = parse_player_yahoo(source_yahoo_dp, 'ID')  
+    c.ds = parse_player_yahoo(source_yahoo_ds, 'DS')  
 def setscoring():
     print '0: BU keeper'
     print '1: big dog expensive'
@@ -337,6 +340,21 @@ def snake():
     snake()
     return
 
+def auc(teamnum, cost):
+    team = c.teams[teamnum]
+    team.draft(c.nom, cost)
+    c.drafted.append("%s|%s|%s|" % (team.showsmall(), cost, c.nom.showsmall()))
+    print "\r\n%s drafts %s\r\n" % (team.name, c.nom.name)
+    
+    remove_drafted_player(c.nom)
+       
+    c.nom = ''
+    
+    writelog()
+    showteams()
+    reco(25)
+    return
+
 def aucval(player,role):
     rpval = 0.0
     if role.upper() == 'QB':
@@ -352,7 +370,10 @@ def aucval(player,role):
     if role.upper() == 'DS':
         rpval = c.dsrp
 
-
+def rosters():
+    for team in c.teams:
+        team.roster()
+    print ""
 
 def history(numtoshow=len(c.drafted)):
     for line in c.drafted[-numtoshow:]:
